@@ -27,3 +27,27 @@ $ pig -x local -f pregunta.pig
         >>> Escriba su respuesta a partir de este punto <<<
 */
 
+data_table = LOAD 'data.csv' USING PigStorage(',')
+    AS (
+        cd:int,
+        name:chararray,
+        lastname:chararray,
+        bd:chararray,
+        color:chararray,
+        num:chararray
+    );
+
+words = foreach data_table GENERATE lastname; 
+
+filtered_ln = FILTER words BY (SUBSTRING(lastname, 0, 1)  MATCHES 'D') 
+OR (SUBSTRING(lastname, 0, 1)  MATCHES 'E')
+OR (SUBSTRING(lastname, 0, 1)  MATCHES 'F')
+OR (SUBSTRING(lastname, 0, 1)  MATCHES 'G')
+OR (SUBSTRING(lastname, 0, 1)  MATCHES 'H')
+OR (SUBSTRING(lastname, 0, 1)  MATCHES 'I')
+OR (SUBSTRING(lastname, 0, 1)  MATCHES 'J')
+OR (SUBSTRING(lastname, 0, 1)  MATCHES 'K');
+
+--ordered_data = ORDER words BY lastname asc;
+
+STORE filtered_ln INTO 'output' USING PigStorage(',');
