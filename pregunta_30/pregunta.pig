@@ -34,3 +34,55 @@ $ pig -x local -f pregunta.pig
         >>> Escriba su respuesta a partir de este punto <<<
 */
 
+data_table = LOAD 'data.csv' USING PigStorage(',')
+    AS (
+        cd:int,
+        name:chararray,
+        lastname:chararray,
+        bd:chararray,
+        color:chararray,
+        num:int
+    );
+
+B = FOREACH data_table GENERATE bd, 
+ToString(ToDate(bd,'yyyy-MM-dd'), 'dd') AS month_num,
+ToString(ToDate(bd,'yyyy-MM-dd'), 'd') AS month_num_short,
+LOWER(ToString(ToDate(bd,'yyyy-MM-dd'), 'EEEE')) AS month_n;
+
+C = FOREACH B GENERATE bd, 
+month_num,
+month_num_short,
+REPLACE(month_n, 'sunday', 'domingo') AS month_n_1;
+
+D = FOREACH C GENERATE bd, 
+month_num,
+month_num_short,
+REPLACE(month_n_1, 'thursday', 'jueves') AS month_n_2;
+
+E = FOREACH D GENERATE bd, 
+month_num,
+month_num_short,
+REPLACE(month_n_2, 'wednesday', 'miercoles') AS month_n_3;
+
+F = FOREACH E GENERATE bd, 
+month_num,
+month_num_short,
+REPLACE(month_n_3, 'friday', 'viernes') AS month_n_4;
+
+G = FOREACH F GENERATE bd, 
+month_num,
+month_num_short,
+REPLACE(month_n_4, 'monday', 'lunes') AS month_n_5;
+
+H = FOREACH G GENERATE bd, 
+month_num,
+month_num_short,
+REPLACE(month_n_5, 'tuesday', 'martes') AS month_n_6;
+
+I = FOREACH H GENERATE bd,
+month_num,
+month_num_short,
+SUBSTRING(month_n_6, 0, 3),
+month_n_6;
+
+STORE I INTO 'output' USING PigStorage(',');

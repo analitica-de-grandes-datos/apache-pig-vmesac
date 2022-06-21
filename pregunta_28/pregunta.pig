@@ -30,9 +30,10 @@ data_table = LOAD 'data.csv' USING PigStorage(',')
         lastname:chararray,
         bd:chararray,
         color:chararray,
-        num:chararray
+        num:int
     );
 
-words = foreach data_table GENERATE bd, ToDate(bd, 'yyyy'); 
-
-STORE words INTO 'output' USING PigStorage(',');
+B = foreach data_table generate ToString(ToDate(bd,'yyyy-MM-dd'), 'yyyy'),
+ToString(ToDate(bd,'yyyy-MM-dd'), 'yy')
+;
+STORE B INTO 'output' USING PigStorage(',');

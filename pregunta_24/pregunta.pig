@@ -28,7 +28,7 @@ data_table = LOAD 'data.csv' USING PigStorage(',')
         num:chararray
     );
 
-words = foreach data_table GENERATE REGEX_EXTRACT(bd, '....-..-..', 2); 
+words = foreach data_table GENERATE REGEX_EXTRACT(bd, '(.*)-(.*)-(.*)', 2); 
 
 --filtered_ln = FILTER words BY (color MATCHES '.*[aeiou]');
 
