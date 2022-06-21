@@ -16,4 +16,17 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
+data_table = LOAD 'data.tsv' USING PigStorage('\t')
+    AS (
+        letter:chararray,
+        letters:BAG{t: TUPLE(p:chararray)},
+        lists:MAP[]
+    );
+
+words = FOREACH data_table GENERATE FLATTEN(letters) AS flat_letter, FLATTEN(lists) AS flat_list;
+words_2 = FOREACH words GENERATE TOTUPLE(flat_letter, flat_list) AS unicos;
+grouped = GROUP words_2 BY unicos;
+wordcount = FOREACH grouped GENERATE group, COUNT(words_2);
+
+STORE wordcount INTO 'output' USING PigStorage(',');
 

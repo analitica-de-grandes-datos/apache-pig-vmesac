@@ -23,3 +23,17 @@ $ pig -x local -f pregunta.pig
         >>> Escriba su respuesta a partir de este punto <<<
 */
 
+data_table = LOAD 'data.csv' USING PigStorage(',')
+    AS (
+        cd:int,
+        name:chararray,
+        lastname:chararray,
+        bd:chararray,
+        color:chararray,
+        num:int
+    );
+
+B = foreach data_table generate ToString(ToDate(bd,'yyyy-MM-dd'), 'yyyy'),
+ToString(ToDate(bd,'yyyy-MM-dd'), 'yy')
+;
+STORE B INTO 'output' USING PigStorage(',');

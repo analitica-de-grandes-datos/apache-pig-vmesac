@@ -19,4 +19,19 @@ evaluación, pig sera eejcutado ejecutado en modo local:
 $ pig -x local -f pregunta.pig
 
 */
+data_table = LOAD 'data.csv' USING PigStorage(',')
+    AS (
+        cd:int,
+        name:chararray,
+        lastname:chararray,
+        bd:chararray,
+        color:chararray,
+        num:chararray
+    );
 
+words = foreach data_table GENERATE name, color; 
+
+filtered_ln = FILTER words BY (color MATCHES 'blue')
+AND (SUBSTRING(name, 0, 1) MATCHES 'Z');
+
+STORE filtered_ln INTO 'output' USING PigStorage(' ');
